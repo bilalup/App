@@ -76,16 +76,16 @@ function useAccessibilityAnnouncement(message: string | ReactNode, shouldAnnounc
         const timer = setTimeout(() => {
             const container = getWrapper();
 
-			requestAnimationFrame(() => {
-				while (container.firstChild) {
-					container.removeChild(container.firstChild);
-				}
+            requestAnimationFrame(() => {
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
 
-				const node = document.createElement('div');
-				node.setAttribute('role', 'alert');
-				node.textContent = message;
-				container.appendChild(node);
-			});
+                const node = document.createElement('div');
+                node.setAttribute('role', 'alert');
+                node.textContent = message;
+                container.appendChild(node);
+            });
         }, ANNOUNCEMENT_DELAY_MS);
 
         return () => {
