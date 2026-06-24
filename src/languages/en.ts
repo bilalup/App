@@ -10,6 +10,7 @@ import type OriginalMessage from '@src/types/onyx/OriginalMessage';
 import type {OriginalMessageSettlementAccountLocked, PersonalRulesModifiedFields, PolicyRulesModifiedFields} from '@src/types/onyx/OriginalMessage';
 import type {
     ChangeFieldParams,
+    CompanyCardBalanceParams,
     ConciergeBrokenCardConnectionParams,
     ConnectionNameParams,
     DelegateRoleParams,
@@ -5689,6 +5690,15 @@ const translations = {
             assignNewCards: {
                 title: 'Assign new cards',
                 description: 'Get the latest cards to assign from your bank',
+            },
+            balance: {
+                currentBalance: 'Current balance',
+                remainingLimit: 'Remaining limit',
+                notAvailable: 'Not available',
+                currentBalanceDescription: ({lastUpdated}: CompanyCardBalanceParams) => `Current balance is reported by your bank and last updated ${lastUpdated}.`,
+                remainingLimitDescription: ({lastUpdated}: CompanyCardBalanceParams) => `Remaining limit is reported by your bank and last updated ${lastUpdated}.`,
+                currentBalanceDescriptionNoTimestamp: 'Current balance is reported by your bank.',
+                remainingLimitDescriptionNoTimestamp: 'Remaining limit is reported by your bank.',
             },
         },
         expensifyCard: {

@@ -131,6 +131,10 @@ type ConciergeBrokenCardConnectionParams = {
     connectionLink?: string;
 };
 
+type CompanyCardBalanceParams = {
+    lastUpdated: string;
+};
+
 export type {
     MissingPropertyParams,
     InvalidPropertyParams,
@@ -149,6 +153,7 @@ export type {
     NotAllowedExtensionParams,
     ParentNavigationSummaryParams,
     PaidElsewhereParams,
+    CompanyCardBalanceParams,
     ConciergeBrokenCardConnectionParams,
     ReportArchiveReasonsClosedParams,
     ReportArchiveReasonsMergedParams,

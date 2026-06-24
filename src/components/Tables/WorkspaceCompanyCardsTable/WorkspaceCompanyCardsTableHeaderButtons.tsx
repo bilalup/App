@@ -48,9 +48,20 @@ type WorkspaceCompanyCardsTableHeaderButtonsProps = {
 
     /** Card feed icon */
     CardFeedIcon: React.ReactNode;
+
+    /** Optional balance block rendered below the search/filter row */
+    balanceBlock?: React.ReactNode;
 };
 
-function WorkspaceCompanyCardsTableHeaderButtons({policyID, feedName, isLoading, showTableControls, canWriteCompanyCards, CardFeedIcon}: WorkspaceCompanyCardsTableHeaderButtonsProps) {
+function WorkspaceCompanyCardsTableHeaderButtons({
+    policyID,
+    feedName,
+    isLoading,
+    showTableControls,
+    canWriteCompanyCards,
+    CardFeedIcon,
+    balanceBlock,
+}: WorkspaceCompanyCardsTableHeaderButtonsProps) {
     const styles = useThemeStyles();
 
     const {shouldUseNarrowLayout, isMediumScreenWidth} = useResponsiveLayout();
@@ -126,15 +137,8 @@ function WorkspaceCompanyCardsTableHeaderButtons({policyID, feedName, isLoading,
 
     return (
         <View>
-            <View
-                style={[
-                    styles.w100,
-                    styles.ph5,
-                    styles.gap5,
-                    styles.pb2,
-                    !shouldShowNarrowLayout && [styles.flexColumn, styles.pv2, styles.flexRow, styles.alignItemsCenter, styles.justifyContentBetween],
-                ]}
-            >
+            {/* Row 1: Feed selector (left) + Settings button (right) */}
+            <View style={[styles.w100, styles.ph5, styles.gap5, styles.pb2, !shouldShowNarrowLayout && [styles.pv2, styles.flexRow, styles.alignItemsCenter, styles.justifyContentBetween]]}>
                 {isLoading ? (
                     <AccountSwitcherSkeletonView
                         avatarSize={CONST.AVATAR_SIZE.DEFAULT}
@@ -151,40 +155,44 @@ function WorkspaceCompanyCardsTableHeaderButtons({policyID, feedName, isLoading,
                         shouldShowRBR={shouldShowFeedSelectorRBR}
                     />
                 )}
-
-                <View
-                    style={[styles.alignItemsCenter, styles.gap3, shouldShowNarrowLayout ? [styles.flexColumnReverse, styles.w100, styles.alignItemsStretch, styles.gap5] : styles.flexRow]}
-                >
-                    {!isLoading && showTableControls && (
-                        <View style={[styles.mnw200]}>
-                            <Table.SearchBar
-                                style={[styles.mh0, styles.mb0]}
-                                label={translate('workspace.companyCards.findCard')}
-                            />
-                        </View>
-                    )}
-
-                    <View style={[styles.flexRow, styles.gap3]}>
-                        {!isLoading && (
-                            <>
-                                {showTableControls && <Table.FilterButtons style={shouldShowNarrowLayout && [styles.flex1]} />}
-                                {canWriteCompanyCards && (
-                                    <ButtonWithDropdownMenu
-                                        success={false}
-                                        onPress={() => {}}
-                                        shouldUseOptionIcon
-                                        customText={translate('common.more')}
-                                        options={secondaryActions}
-                                        isSplitButton={false}
-                                        wrapperStyle={shouldShowNarrowLayout ? styles.flex1 : styles.flexGrow0}
-                                        sentryLabel={CONST.SENTRY_LABEL.WORKSPACE.COMPANY_CARDS.MORE_DROPDOWN}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </View>
-                </View>
+                {!isLoading && canWriteCompanyCards && (
+                    <ButtonWithDropdownMenu
+                        success={false}
+                        onPress={() => {}}
+                        shouldUseOptionIcon
+                        customText={translate('common.more')}
+                        options={secondaryActions}
+                        isSplitButton={false}
+                        wrapperStyle={shouldShowNarrowLayout ? styles.flex1 : styles.flexGrow0}
+                        sentryLabel={CONST.SENTRY_LABEL.WORKSPACE.COMPANY_CARDS.MORE_DROPDOWN}
+                    />
+                )}
             </View>
+
+            {/* Row 2: Balance block */}
+            {balanceBlock}
+
+            {/* Row 3: Search (left) + Filters/Display (right) */}
+            <View
+                style={[
+                    styles.ph5,
+                    styles.pb2,
+                    styles.alignItemsCenter,
+                    styles.gap3,
+                    shouldShowNarrowLayout ? [styles.flexColumnReverse, styles.w100, styles.alignItemsStretch, styles.gap5] : [styles.flexRow, styles.justifyContentSpaceBetween],
+                ]}
+            >
+                {!isLoading && showTableControls && (
+                    <View style={[styles.mnw200]}>
+                        <Table.SearchBar
+                            style={[styles.mh0, styles.mb0]}
+                            label={translate('workspace.companyCards.findCard')}
+                        />
+                    </View>
+                )}
+                {!isLoading && showTableControls && <Table.FilterButtons style={shouldShowNarrowLayout && [styles.flex1]} />}
+            </View>
+
             {!isLoading && canWriteCompanyCards && shouldShowBrokenConnectionError && (
                 <View style={[styles.flexRow, styles.ph5, styles.alignItemsCenter]}>
                     <Icon

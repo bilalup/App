@@ -15,13 +15,15 @@ import {useMemoizedLazyIllustrations} from '@hooks/useLazyAsset';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
 import useOnyx from '@hooks/useOnyx';
+import usePolicy from '@hooks/usePolicy';
 import useResponsiveLayout from '@hooks/useResponsiveLayout';
 import useThemeStyles from '@hooks/useThemeStyles';
 import {resetFailedWorkspaceCompanyCardUnassignment} from '@libs/actions/CompanyCards';
-import {getDefaultCardName} from '@libs/CardUtils';
+import {getDefaultCardName, getPlaidInstitutionId} from '@libs/CardUtils';
 import type {SkeletonSpanReasonAttributes} from '@libs/telemetry/useSkeletonSpan';
 import tokenizedSearch from '@libs/tokenizedSearch';
 import WorkspaceCompanyCardPageEmptyState from '@pages/workspace/companyCards/WorkspaceCompanyCardPageEmptyState';
+import WorkspaceCompanyCardsBalanceLabels from '@pages/workspace/companyCards/WorkspaceCompanyCardsBalanceLabels';
 import WorkspaceCompanyCardsFeedAddedEmptyPage from '@pages/workspace/companyCards/WorkspaceCompanyCardsFeedAddedEmptyPage';
 import WorkspaceCompanyCardsFeedPendingPage from '@pages/workspace/companyCards/WorkspaceCompanyCardsFeedPendingPage';
 import variables from '@styles/variables';
@@ -79,6 +81,7 @@ function WorkspaceCompanyCardsTable({
     const {isOffline} = useNetwork();
     const {translate, localeCompare} = useLocalize();
     const {shouldUseNarrowLayout, isMediumScreenWidth} = useResponsiveLayout();
+    const policy = usePolicy(policyID);
 
     const {
         feedName,
@@ -335,19 +338,6 @@ function WorkspaceCompanyCardsTable({
         addBottomSafeAreaPadding: true,
     });
 
-    const headerButtonsComponent = showTableHeaderButtons ? (
-        <View style={styles.mb3}>
-            <WorkspaceCompanyCardsTableHeaderButtons
-                isLoading={isLoading}
-                policyID={policyID}
-                feedName={feedName}
-                showTableControls={showTableControls}
-                canWriteCompanyCards={canWriteCompanyCards}
-                CardFeedIcon={cardFeedIcon}
-            />
-        </View>
-    ) : undefined;
-
     const reasonAttributes: SkeletonSpanReasonAttributes = {
         context: 'WorkspaceCompanyCardsTable',
         isLoading,
@@ -361,6 +351,32 @@ function WorkspaceCompanyCardsTable({
             renderSkeletonItem={WorkspaceCompanyCardsTableSkeleton}
         />
     );
+
+    const shouldShowBalance =
+        !!getPlaidInstitutionId(feedName) && !isLoadingFeed && !isFeedPending && showCards && (selectedFeed?.currentBalance !== undefined || selectedFeed?.remainingLimit !== undefined);
+
+    const balanceBlock = shouldShowBalance ? (
+        <WorkspaceCompanyCardsBalanceLabels
+            currentBalance={selectedFeed?.currentBalance}
+            remainingLimit={selectedFeed?.remainingLimit}
+            currency={policy?.outputCurrency ?? CONST.CURRENCY.USD}
+            lastUpdated={selectedFeed?.balanceTimestamp}
+        />
+    ) : undefined;
+
+    const headerButtonsComponent = showTableHeaderButtons ? (
+        <View style={styles.mb3}>
+            <WorkspaceCompanyCardsTableHeaderButtons
+                isLoading={isLoading}
+                policyID={policyID}
+                feedName={feedName}
+                showTableControls={showTableControls}
+                canWriteCompanyCards={canWriteCompanyCards}
+                CardFeedIcon={cardFeedIcon}
+                balanceBlock={balanceBlock}
+            />
+        </View>
+    ) : undefined;
 
     const ListHeader = (
         <>

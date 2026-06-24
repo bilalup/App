@@ -114,6 +114,15 @@ type CustomCardFeedData = OnyxCommon.OnyxValueWithOfflineFeedback<{
     /** Plaid access token */
     plaidAccessToken?: string;
 
+    /** Current balance reported by Plaid, in cents */
+    currentBalance?: number;
+
+    /** Remaining credit limit reported by Plaid, in cents */
+    remainingLimit?: number;
+
+    /** Datetime the feed balance was last fetched from the bank, formatted as 'yyyy-MM-dd HH:mm:ss' */
+    balanceTimestamp?: string;
+
     /** CSV upload layout settings (present on ccupload feeds) */
     uploadLayoutSettings?: {
         /** User-defined name for the CSV upload layout */
