@@ -2488,6 +2488,10 @@ const ROUTES = {
             return `workspaces/${policyID}/workflows/auto-reporting-frequency/monthly-offset` as const;
         },
     },
+    WORKSPACE_WORKFLOWS_IMPORT: {
+        route: 'workspaces/:policyID/workflows/import',
+        getRoute: (policyID: string) => `workspaces/${policyID}/workflows/import` as const,
+    },
     WORKSPACE_INVOICES: {
         route: 'workspaces/:policyID/invoices',
         getRoute: (policyID: string | undefined) => {

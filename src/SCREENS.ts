@@ -825,6 +825,7 @@ const SCREENS = {
         WORKFLOWS_APPROVALS_OVER_LIMIT_APPROVER: 'Workspace_Workflows_Approvals_Over_Limit_Approver',
         WORKFLOWS_AUTO_REPORTING_FREQUENCY: 'Workspace_Workflows_Auto_Reporting_Frequency',
         WORKFLOWS_AUTO_REPORTING_MONTHLY_OFFSET: 'Workspace_Workflows_Auto_Reporting_Monthly_Offset',
+        WORKFLOWS_IMPORT: 'Workspace_Workflows_Import',
         DESCRIPTION: 'Workspace_Overview_Description',
         SHARE: 'Workspace_Overview_Share',
         NAME: 'Workspace_Overview_Name',

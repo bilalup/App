@@ -8565,6 +8565,7 @@ const CONST = {
             WORKFLOWS: {
                 AUTO_REPORTING_FREQUENCY: 'WorkspaceWorkflows-AutoReportingFrequency',
                 ADD_APPROVAL: 'WorkspaceWorkflows-AddApproval',
+                IMPORT_WORKFLOWS: 'WorkspaceWorkflows-ImportWorkflows',
                 LOAD_MORE_APPROVALS: 'WorkspaceWorkflows-LoadMoreApprovals',
                 BANK_ACCOUNT: 'WorkspaceWorkflows-BankAccount',
                 ADD_BANK_ACCOUNT: 'WorkspaceWorkflows-AddBankAccount',

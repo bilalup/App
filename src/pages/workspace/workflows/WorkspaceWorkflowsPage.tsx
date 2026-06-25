@@ -5,6 +5,8 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {InteractionManager, View} from 'react-native';
 import type {TupleToUnion} from 'type-fest';
 import ApprovalWorkflowSection from '@components/ApprovalWorkflowSection';
+import ButtonWithDropdownMenu from '@components/ButtonWithDropdownMenu';
+import type {DropdownOption} from '@components/ButtonWithDropdownMenu/types';
 import Icon from '@components/Icon';
 import getBankIcon from '@components/Icon/BankIcons';
 import type {BankName} from '@components/Icon/BankIconsUtils';
@@ -145,7 +147,7 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
     const styles = useThemeStyles();
     const theme = useTheme();
     const illustrations = useMemoizedLazyIllustrations(['Workflows']);
-    const expensifyIcons = useMemoizedLazyExpensifyIcons(['DotIndicator', 'Info', 'Plus']);
+    const expensifyIcons = useMemoizedLazyExpensifyIcons(['DotIndicator', 'Info', 'Plus', 'Table']);
     // We need to use isSmallScreenWidth instead of shouldUseNarrowLayout to apply a correct padding style
     // eslint-disable-next-line rulesdir/prefer-shouldUseNarrowLayout-instead-of-isSmallScreenWidth
     const {shouldUseNarrowLayout, isSmallScreenWidth} = useResponsiveLayout();
@@ -290,6 +292,55 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
 
         Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_APPROVALS_EXPENSES_FROM.getRoute(route.params.policyID));
     }, [policy, route.params.policyID, availableMembers, usedApproverEmails, canAccessSubmit2026Features, navigateToSubmitWorkspaceApprovalsUpgrade]);
+
+    const importWorkflowsAction = useCallback(() => {
+        if (isAccountLocked) {
+            showLockedAccountModal();
+            return;
+        }
+        if (isOffline) {
+            showConfirmModal({
+                title: translate('common.youAppearToBeOffline'),
+                prompt: translate('common.thisFeatureRequiresInternet'),
+                confirmText: translate('common.buttonConfirm'),
+                shouldShowCancelButton: false,
+                shouldHandleNavigationBack: true,
+            });
+            return;
+        }
+        Navigation.navigate(ROUTES.WORKSPACE_WORKFLOWS_IMPORT.getRoute(route.params.policyID));
+    }, [isAccountLocked, showLockedAccountModal, isOffline, showConfirmModal, translate, route.params.policyID]);
+
+    const moreOptions = useMemo((): Array<DropdownOption<string>> => {
+        if (!isPolicyAdmin) {
+            return [];
+        }
+        return [
+            {
+                icon: expensifyIcons.Table,
+                text: translate('spreadsheet.importWorkflows'),
+                onSelected: importWorkflowsAction,
+                value: 'importWorkflows',
+            },
+        ];
+    }, [isPolicyAdmin, expensifyIcons.Table, translate, importWorkflowsAction]);
+
+    const getHeaderButtons = () => {
+        if (!isPolicyAdmin) {
+            return null;
+        }
+        return (
+            <ButtonWithDropdownMenu<string>
+                success={false}
+                onPress={() => {}}
+                shouldAlwaysShowDropdownMenu
+                customText={translate('common.more')}
+                sentryLabel={CONST.SENTRY_LABEL.WORKSPACE.WORKFLOWS.IMPORT_WORKFLOWS}
+                options={moreOptions}
+                isSplitButton={false}
+            />
+        );
+    };
 
     const isHRAdvancedModeEnabled = isHRAdvancedMode(policy);
     const hrFinalApproverEmail = getHRFinalApprover(policy) ?? undefined;
@@ -887,6 +938,7 @@ function WorkspaceWorkflowsPage({policy, route}: WorkspaceWorkflowsPageProps) {
                 shouldShowLoading={isLoading}
                 shouldUseScrollView
                 addBottomSafeAreaPadding
+                headerContent={getHeaderButtons()}
             >
                 <View style={[styles.mt3, shouldUseNarrowLayout ? styles.workspaceSectionMobile : styles.workspaceSection]}>
                     {optionItems.map(renderOptionItem)}
