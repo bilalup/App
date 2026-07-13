@@ -1,0 +1,35 @@
+name: iOS Test on macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+
+      - name: Run iOS build
+        run: |
+          cd ios
+          xcodebuild \
+          -workspace Expensify.xcworkspace \
+          -scheme Expensify \
+          -sdk iphonesimulator \
+          -configuration Debug \
+          build
