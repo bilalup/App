@@ -301,7 +301,7 @@ function AuthScreens() {
                         />
                         <RootStack.Screen
                             name={NAVIGATORS.SHARE_MODAL_NAVIGATOR}
-                            options={rootNavigatorScreenOptions.fullScreen}
+                            options={{...rootNavigatorScreenOptions.fullScreen, gestureEnabled: true}}
                             component={ShareModalStackNavigator}
                             listeners={modalScreenListeners}
                         />
