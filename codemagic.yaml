@@ -9,6 +9,7 @@ workflows:
     environment:
       xcode: latest
       cocoapods: default
+      node: 20.20.2
 
     scripts:
       - name: Install dependencies
@@ -28,6 +29,3 @@ workflows:
           -configuration Debug \
           -sdk iphonesimulator \
           build
-
-    artifacts:
-      - build/**/*.app
