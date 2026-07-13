@@ -8,13 +8,16 @@ workflows:
 
     environment:
       xcode: latest
-
       node: 20.20.2
       npm: 10.8.2
-
       cocoapods: default
 
     scripts:
+
+      - name: Fix submodule URL
+        script: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+
       - name: Check versions
         script: |
           node -v
@@ -30,20 +33,23 @@ workflows:
           cd ios
           pod install
 
-      - name: List available schemes
+      - name: List iOS schemes
         script: |
+          cd ios
           xcodebuild \
-          -workspace ios/NewExpensify.xcworkspace \
+          -workspace NewExpensify.xcworkspace \
           -list
 
       - name: Build iOS Simulator app
         script: |
+          cd ios
+
           xcodebuild \
-          -workspace ios/NewExpensify.xcworkspace \
-          -scheme NewExpensify \
+          -workspace NewExpensify.xcworkspace \
+          -scheme Expensify.dev \
           -configuration Debug \
           -sdk iphonesimulator \
-          -derivedDataPath build \
+          -derivedDataPath ../build \
           build
 
     artifacts:
